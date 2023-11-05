@@ -1,0 +1,33 @@
+{
+  "auth": {
+    "login": "Inicio de sesion exitoso",
+    "logout": "Cierre de sesion exitoso",
+    "register": "Registro de usuario exitoso",
+    "verify": "Verificacion exitosa",
+    "refresh": "El nuevo codigo fue enviado con exito",
+    "mail": {
+      "sent": "El envio del correo fue exitoso "
+    },
+    "password": {
+      "renew": "Contraseña actualizada"
+    }
+  },
+  "users": {
+    "found": "Usuarios encontrados"
+  },
+  "user": {
+    "update":{
+      "email": "Email actualizado",
+      "pass": "Contraseña actualizada, inicie sesion nuevamente",
+      "data": "Datos actualizados"
+    },
+    "activated": "Usuario activado",
+    "softDeleted":"Usuario eliminado logicamente",
+    "getDetail": "Datos de usuario encontrados",
+    "editUserDetail": "Datos de usuario editados"
+  },
+  "role": {
+    "created": "Role creado",
+    "added": "Role agregado"
+  }
+}
