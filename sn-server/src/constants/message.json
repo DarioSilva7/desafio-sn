@@ -21,7 +21,7 @@
       "pass": "Contraseña actualizada, inicie sesion nuevamente",
       "data": "Datos actualizados",
       "image": "Imagen cargada"
-    },
+    }
   },
   "activated": "Usuario activado",
   "softDeleted": "Usuario eliminado logicamente",
@@ -40,4 +40,3 @@
     }
   }
 }
-  
