@@ -57,7 +57,7 @@ const loginService = async ({ email, password }) => {
     id: user.id,
     firstName: user.firstName,
     lastName: user.lastName,
-    birthday: user.birthday,
+    birthdate: user.birthdate,
     dni: user.dni,
     email: user.email,
     image: user.image,

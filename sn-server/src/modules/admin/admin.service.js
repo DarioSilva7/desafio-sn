@@ -25,7 +25,7 @@ const getUsersService = async (limit, page, status) => {
     offset: (page - 1) * limit,
     order: [["createdAt", "ASC"]],
     attributes: {
-      exclude: ["password", "birthday"],
+      exclude: ["password", "birthdate"],
     },
     include: [
       {
