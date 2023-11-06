@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  snmysqldb:
+    image: mysql:5.7
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_DATABASE=sndb
+    ports:
+      - 3307:3306
+
+  # snapp:
+    # depends_on:
+    #   - snmysqldb
+    # links:
+    #   - snmysqldb
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
+    # command: sh -c 'npm install; npm start'
+    # ports:
+    #   - 3000:3000
