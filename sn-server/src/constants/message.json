@@ -16,19 +16,28 @@
     "found": "Usuarios encontrados"
   },
   "user": {
-    "update":{
-      "email": "Email actualizado",
+    "update": {
+      "email": "Email actualizado, inicie sesion nuevamente",
       "pass": "Contraseña actualizada, inicie sesion nuevamente",
       "data": "Datos actualizados",
       "image": "Imagen cargada"
     },
-    "activated": "Usuario activado",
-    "softDeleted":"Usuario eliminado logicamente",
-    "getDetail": "Datos de usuario encontrados",
-    "editUserDetail": "Datos de usuario editados"
   },
-  "role": {
-    "created": "Role creado",
-    "added": "Role agregado"
+  "activated": "Usuario activado",
+  "softDeleted": "Usuario eliminado logicamente",
+  "getDetail": "Datos de usuario encontrados",
+  "editUserDetail": "Datos de usuario editados",
+  "admin": {
+    "updateUser": {
+      "email": "Email del usuario actualizado",
+      "pass": "Contraseña del usuario actualizada",
+      "data": "Datos del usuario actualizados",
+      "image": "Imagen del usuario cargada"
+    },
+    "role": {
+      "created": "Role creado",
+      "added": "Role agregado"
+    }
   }
 }
+  
