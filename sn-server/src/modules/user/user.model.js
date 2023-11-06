@@ -65,7 +65,7 @@ User.init(
         },
       },
     },
-    birthday: {
+    birthdate: {
       type: DataTypes.DATE,
       allowNull: true,
     },

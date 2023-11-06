@@ -1,5 +1,5 @@
 function validationErrorResponse(res, errors) {
-  return res.status(400).json({
+  return res.status(422).json({
     ok: false,
     message: "Los datos no cumplen los requisitos",
     data: {},
