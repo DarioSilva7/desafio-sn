@@ -1,5 +1,10 @@
 const msgResponse = require("../../constants/message.json");
-const { updatePassService, updateEmailService } = require("./user.service");
+const {
+  updatePassService,
+  updateEmailService,
+  updateDataService,
+  uploadImageService,
+} = require("./user.service");
 
 const updatePass = async (req, res, next) => {
   try {
@@ -40,12 +45,12 @@ const updateEmail = async (req, res, next) => {
 const updateData = async (req, res, next) => {
   try {
     const { id } = req.user;
-    await updateDataService(id);
+    const userUpdated = await updateDataService(id, req.body);
     console.info(`Service: updateData | Method: PUT, updateData: OK`);
     return res.status(201).send({
       ok: true,
-      message: msgResponse.user.update.pass,
-      data: {},
+      message: msgResponse.user.update.data,
+      data: { user: userUpdated },
       error: [],
     });
   } catch (error) {
@@ -54,8 +59,30 @@ const updateData = async (req, res, next) => {
   }
 };
 
+const uploadUserImage = async (req, res, next) => {
+  try {
+    const { id } = req.user;
+    if (!req.file) throw new Error("No se cargo archivo");
+
+    const imageUpadted = await uploadImageService(id, req.file);
+    console.info(
+      `Service: uploadUserImage | Method: POST, uploadUserImage: image uploaded successfully`
+    );
+    res.status(200).json({
+      ok: true,
+      message: msgResponse.user.update.image,
+      data: { image: imageUpadted },
+      error: [],
+    });
+  } catch (error) {
+    console.error(`Service: uploadUserImage | Method: POST, Error: ${error}`);
+    next(error);
+  }
+};
+
 module.exports = {
   updatePass,
   updateEmail,
   updateData,
+  uploadUserImage,
 };

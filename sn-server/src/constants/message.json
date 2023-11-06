@@ -19,7 +19,8 @@
     "update":{
       "email": "Email actualizado",
       "pass": "Contraseña actualizada, inicie sesion nuevamente",
-      "data": "Datos actualizados"
+      "data": "Datos actualizados",
+      "image": "Imagen cargada"
     },
     "activated": "Usuario activado",
     "softDeleted":"Usuario eliminado logicamente",
