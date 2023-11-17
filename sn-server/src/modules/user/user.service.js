@@ -1,8 +1,30 @@
 const bcrypt = require("bcrypt");
 const User = require("./user.model");
-const { logoutService } = require("../auth/auth.service");
-const fs = require("fs");
-const { extname, join } = require("path");
+const { logoutAction } = require("../auth/auth.service");
+const Role = require("../role/role.model");
+
+const getUserService = async (id) => {
+  const user = await User.findByPk(id, {
+    attributes: {
+      exclude: ["password"],
+    },
+  });
+  const userObject = {
+    id: user.id,
+    first_name: user.first_name,
+    last_name: user.last_name,
+    birthdate: user.birthdate,
+    dni: user.dni,
+    email: user.email,
+    image: user.image,
+    active: user.active,
+  };
+  console.log(
+    "🚀 ~ file: user.service.js:22 ~ getUserService ~ userObject:",
+    userObject
+  );
+  return userObject;
+};
 
 const updatePassService = async (id, password) => {
   const [user, hashedPassword] = await Promise.all([
@@ -11,54 +33,51 @@ const updatePassService = async (id, password) => {
   ]);
   user.password = hashedPassword;
   await user.save();
-  await logoutService(user);
+  await logoutAction(user);
   return;
 };
 
-const updateEmailService = async (id, email) => {
+const updateEmailAction = async (id, email) => {
   const user = await User.findByPk(id);
   user.email = email;
   await user.save();
-  await logoutService(user);
+  await logoutAction(user);
   return;
 };
 
-const updateDataService = async (id, data) => {
+const updateDataAction = async (id, data) => {
+  if (data.birthdate) {
+    console.log(
+      "🚀 ~ file: user.service.js:50 ~ updateDataAction ~ data.birthdate:",
+      data.birthdate
+    );
+    data.birthdate = new Date(data.birthdate);
+    console.log(
+      "🚀 ~ file: user.service.js:55 ~ updateDataAction ~ data.birthdate:",
+      data.birthdate
+    );
+  }
   const user = await User.findByPk(id, {
     attributes: { exclude: ["password", "createdAt", "updatedAt"] },
   });
   return user.update(data);
 };
 
-const uploadImageService = async (id, file) => {
+const uploadImageService = async (id, newImage) => {
   const userExists = await User.findByPk(id);
-  if (userExists.image) {
-    const [path, fileName] = userExists.image.split("attach\\");
-    try {
-      const filesFounded = await fs.promises.readdir(
-        join(__dirname, "../../attach")
-      );
-      filesFounded.map(async (f) => {
-        if (f == fileName) {
-          await fs.promises.unlink(userExists.image);
-        }
-        return;
-      });
-    } catch (error) {
-      console.log(
-        "🚀 ~ file: user.service.js:40 ~ uploadImageService ~ error:",
-        error
-      );
-    }
-  }
-  userExists.image = file.path;
+  console.log(
+    "🚀 ~ file: user.service.js:57 ~ uploadImageService ~ userExists:",
+    userExists
+  );
+  userExists.image = newImage;
   await userExists.save();
   return userExists.image;
 };
 
 module.exports = {
+  getUserService,
   updatePassService,
-  updateEmailService,
-  updateDataService,
+  updateEmailAction,
+  updateDataAction,
   uploadImageService,
 };

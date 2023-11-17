@@ -28,10 +28,10 @@ const options = {
       tlds: { allow: false },
     })
     .label("El correo debe ser valido"),
-  birthdate: Joi.string(),
+  birthdate: Joi.string().allow(""),
   dni: Joi.number()
     .integer()
-    .min(10000000)
+    .min(1000000)
     .max(99999999)
     .label("El dni debe ser valido"),
   password: Joi.string()
@@ -60,6 +60,7 @@ const blueprintRegister = Joi.object().keys({
   password: options.password.required(),
   confirm: options.confirm.required(),
   dni: options.dni.required(),
+  image: Joi.string(),
 });
 const validateRegister = (req, res, next) => {
   const validationResult = blueprintRegister.validate(req.body, {
@@ -145,7 +146,7 @@ const validateRenewEmail = async (req, res, next) => {
   next();
 };
 
-const { password, confirm, ...rest } = options;
+const { email, password, confirm, ...rest } = options;
 const blueprintData = Joi.object().keys(rest);
 const validateData = async (req, res, next) => {
   const validationResult = blueprintData.validate(req.body, {

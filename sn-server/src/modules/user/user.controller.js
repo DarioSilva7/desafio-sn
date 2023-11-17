@@ -1,10 +1,28 @@
 const msgResponse = require("../../constants/message.json");
 const {
   updatePassService,
-  updateEmailService,
-  updateDataService,
+  updateEmailAction,
+  updateDataAction,
   uploadImageService,
+  getUserService,
 } = require("./user.service");
+
+const getUser = async (req, res, next) => {
+  try {
+    const { id } = req.user;
+    const userData = await getUserService(id);
+    console.info(`Service: getUser | Method: PUT, getUser: OK`);
+    return res.status(201).send({
+      ok: true,
+      message: msgResponse.user.founded,
+      data: { user: userData },
+      error: [],
+    });
+  } catch (error) {
+    console.error(`Service: getUser | Method: PUT, Error: ${error}`);
+    next(error);
+  }
+};
 
 const updatePass = async (req, res, next) => {
   try {
@@ -28,7 +46,7 @@ const updateEmail = async (req, res, next) => {
   try {
     const { id } = req.user;
     const { email } = req.body;
-    await updateEmailService(id, email);
+    await updateEmailAction(id, email);
     console.info(`Service: updateEmail | Method: PUT, updateEmail: OK`);
     return res.status(201).send({
       ok: true,
@@ -45,7 +63,7 @@ const updateEmail = async (req, res, next) => {
 const updateData = async (req, res, next) => {
   try {
     const { id } = req.user;
-    const userUpdated = await updateDataService(id, req.body);
+    const userUpdated = await updateDataAction(id, req.body);
     console.info(`Service: updateData | Method: PUT, updateData: OK`);
     return res.status(201).send({
       ok: true,
@@ -62,9 +80,10 @@ const updateData = async (req, res, next) => {
 const uploadUserImage = async (req, res, next) => {
   try {
     const { id } = req.user;
-    if (!req.file) throw new Error("No se cargo archivo");
+    // if (!req.file) throw new Error("No se cargo archivo");
+    if (!req.body.image) throw new Error("No se cargo archivo");
 
-    const imageUpadted = await uploadImageService(id, req.file);
+    const imageUpadted = await uploadImageService(id, req.body.image);
     console.info(
       `Service: uploadUserImage | Method: POST, uploadUserImage: image uploaded successfully`
     );
@@ -81,6 +100,7 @@ const uploadUserImage = async (req, res, next) => {
 };
 
 module.exports = {
+  getUser,
   updatePass,
   updateEmail,
   updateData,

@@ -16,6 +16,8 @@
     "found": "Usuarios encontrados"
   },
   "user": {
+    "founded":"Usuario encontrado",
+    "activated":"Usuario activado",
     "update": {
       "email": "Email actualizado, inicie sesion nuevamente",
       "pass": "Contraseña actualizada, inicie sesion nuevamente",

@@ -1,23 +1,16 @@
 const msgResponse = require("../../constants/message.json");
-const {
-  loginService,
-  registerService,
-  logoutService,
-} = require("./auth.service");
+const { loginAction, registerAction, logoutAction } = require("./auth.service");
 
 const register = async (req, res, next) => {
   try {
-    const { email, first_name, last_name, dni, password, role } = req.body;
-    const userRegisteredId = await registerService(
-      {
-        email,
-        first_name,
-        last_name,
-        dni,
-        password,
-      },
-      role
-    );
+    const { email, first_name, last_name, dni, password } = req.body;
+    const userRegisteredId = await registerAction({
+      email,
+      first_name,
+      last_name,
+      dni,
+      password,
+    });
     console.info(
       `Service: register | Method: POST, register: User registered with id: ${userRegisteredId}`
     );
@@ -36,7 +29,7 @@ const register = async (req, res, next) => {
 const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    const [token, user] = await loginService({
+    const [token, user] = await loginAction({
       email,
       password,
     });
@@ -55,7 +48,7 @@ const login = async (req, res, next) => {
 
 const logout = async (req, res, next) => {
   try {
-    await logoutService(req.user);
+    await logoutAction(req.user);
     console.info(`Service: logout | Method: POST, logout: ok`);
     const headers = {
       authorization: "",

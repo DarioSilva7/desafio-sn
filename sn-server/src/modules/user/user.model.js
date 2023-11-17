@@ -98,7 +98,9 @@ User.init(
       },
     },
     image: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.STRING(400),
+      defaultValue:
+        "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pinterest.co.uk%2Fpin%2Fdefault-avatar-profile-icon-vector-social-media-user-image-stock-vector--953144708607357143%2F&psig=AOvVaw0wki3HtU_XXhH33RrKeFsL&ust=1700253905877000&source=images&cd=vfe&ved=0CBEQjRxqFwoTCOCOwMOxyYIDFQAAAAAdAAAAABAE",
       allowNull: true,
     },
     active: {

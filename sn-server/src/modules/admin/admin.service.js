@@ -1,6 +1,7 @@
 const boom = require("@hapi/boom");
 const Role = require("../role/role.model");
 const User = require("../user/user.model");
+const { Op } = require("../../config/database");
 
 const addRoleService = async (roleId, userId) => {
   const [roleFounded, userFounded] = await Promise.all([
@@ -17,13 +18,58 @@ const addRoleService = async (roleId, userId) => {
   return userFounded.save();
 };
 
-const getUsersService = async (limit, page, status) => {
-  const where = status !== null ? { active: status } : {};
-  const allUsers = await User.findAll({
-    where,
-    limit,
-    offset: (page - 1) * limit,
-    order: [["createdAt", "ASC"]],
+const getUsersAction = async (
+  userId,
+  limit,
+  page,
+  status,
+  first_name,
+  last_name
+) => {
+  if (first_name) {
+    return User.findAll({
+      where: {
+        first_name: { [Op.like]: `%${first_name}%` },
+        last_name: { [Op.like]: `%${last_name}%` },
+      },
+      limit,
+      offset: (page - 1) * limit,
+      order: [["createdAt", "ASC"]],
+      attributes: {
+        exclude: ["password"],
+      },
+      include: [
+        {
+          model: Role,
+          attributes: { exclude: ["createdAt", "updatedAt"] },
+        },
+      ],
+    });
+  }
+  const where = status !== null ? { active: status, id } : {};
+  const [allUsers, qtyUsers] = await Promise.all([
+    User.findAll({
+      where: { ...where, id: { [Op.ne]: userId } },
+      limit,
+      offset: (page - 1) * limit,
+      order: [["createdAt", "ASC"]],
+      attributes: {
+        exclude: ["password"],
+      },
+      include: [
+        {
+          model: Role,
+          attributes: { exclude: ["createdAt", "updatedAt"] },
+        },
+      ],
+    }),
+    User.count(),
+  ]);
+  return [allUsers, qtyUsers];
+};
+
+const getUserDetailAction = async (userId) => {
+  return await User.findByPk(userId, {
     attributes: {
       exclude: ["password", "birthdate"],
     },
@@ -34,7 +80,6 @@ const getUsersService = async (limit, page, status) => {
       },
     ],
   });
-  return allUsers;
 };
 
 const userSoftDeleteService = async (userId) => {
@@ -43,7 +88,7 @@ const userSoftDeleteService = async (userId) => {
   return userFounded.save();
 };
 
-const activeUserService = async (userId) => {
+const activeUserAction = async (userId) => {
   const userFounded = await User.findByPk(userId);
   userFounded.active = true;
   return userFounded.save();
@@ -51,7 +96,8 @@ const activeUserService = async (userId) => {
 
 module.exports = {
   addRoleService,
-  getUsersService,
+  getUsersAction,
   userSoftDeleteService,
-  activeUserService,
+  activeUserAction,
+  getUserDetailAction,
 };

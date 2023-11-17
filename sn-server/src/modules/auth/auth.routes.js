@@ -8,11 +8,11 @@ const {
   // validateRenewPassword,
 } = require("./auth.validate");
 
+authRoutes.get("/", (req, res) => res.send("AUTH ROUTES"));
 authRoutes.post("/register", validateRegister, emailVerification, register);
 authRoutes.post("/login", validateLogin, login);
 authRoutes.post("/logout", verifyAuth, logout);
 
-// authRoutes.put(
 //   "/renew-password",
 //   verifyAuth,
 //   validateRenewPassword,

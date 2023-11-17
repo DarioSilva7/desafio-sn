@@ -7,20 +7,15 @@ const Role = require("../role/role.model");
 const msgErrors = require("../../constants/errorMessage.json");
 // const { createVerificationCode } = require("../../utils/verificationCode");
 
-const registerService = async (user, roleId) => {
+const registerAction = async (user) => {
   // user.verificationCode= createVerificationCode();
 
   const userFounded = await User.create(user);
-  if (roleId) {
-    const roleFounded = await Role.findByPk(roleId);
-    userFounded.addRole(roleFounded);
-    await userFounded.save();
-  }
   // await sendVerificationCode(email, verificationCode);
   return userFounded.id;
 };
 
-const loginService = async ({ email, password }) => {
+const loginAction = async ({ email, password }) => {
   const user = await User.findOne({
     where: { email: email },
     attributes: {
@@ -38,10 +33,7 @@ const loginService = async ({ email, password }) => {
   if (!(await bcrypt.compare(password, user.password))) {
     throw boom.unauthorized(msgErrors.auth.invalidCredentials);
   }
-  console.log(
-    "🚀 ~ file: auth.service.js:32 ~ loginService ~ user:",
-    user.Roles
-  );
+  console.log("🚀 ~ file: auth.service.js:32 ~ loginAction ~ user:", user);
 
   const payload = {
     id: user.id,
@@ -55,8 +47,8 @@ const loginService = async ({ email, password }) => {
 
   const userObject = {
     id: user.id,
-    firstName: user.firstName,
-    lastName: user.lastName,
+    first_name: user.first_name,
+    last_name: user.last_name,
     birthdate: user.birthdate,
     dni: user.dni,
     email: user.email,
@@ -66,7 +58,7 @@ const loginService = async ({ email, password }) => {
   return [token, userObject];
 };
 
-const logoutService = async (userLogged) => {
+const logoutAction = async (userLogged) => {
   return UserToken.destroy({ where: { userId: userLogged.id } });
 };
 
@@ -82,8 +74,8 @@ const renewPasswordService = async (id, password) => {
 };
 
 module.exports = {
-  registerService,
-  loginService,
-  logoutService,
+  registerAction,
+  loginAction,
+  logoutAction,
   renewPasswordService,
 };

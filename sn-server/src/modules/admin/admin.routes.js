@@ -1,3 +1,4 @@
+const adminRoutes = require("express").Router();
 const { upload } = require("../../middlewares/multer");
 const {
   validateRenewPassword,
@@ -9,6 +10,7 @@ const {
   validateUserIdByParams,
   validateUserDeleted,
   validateUserAlreadyActive,
+  validateUserActivated,
 } = require("../user/user.validate");
 const {
   addRole,
@@ -20,10 +22,13 @@ const {
   updateUserDataByAdmin,
   uploadUserImageByAdmin,
 } = require("./admin.controller");
+const { getUserDetailAction } = require("./admin.service");
 
-const adminRoutes = require("express").Router();
-
+adminRoutes.get("/", (req, res) => res.send("ADMIN ROUTES"));
 adminRoutes.get("/users", getUsers);
+
+adminRoutes.get("/user/:userId", validateUserIdByParams, getUserDetailAction);
+
 adminRoutes.delete(
   "/user/:userId",
   validateUserIdByParams,
@@ -46,18 +51,26 @@ adminRoutes.put(
 );
 
 adminRoutes.put(
-  "/user/profile/edit/pass",
+  "/user/:userId/profile/edit/pass",
+  validateUserIdByParams,
   validateRenewPassword,
   updateUserPassByAdmin
 );
 adminRoutes.put(
-  "/user/profile/edit/email",
+  "/user/:userId/profile/edit/email",
+  validateUserIdByParams,
   validateRenewEmail,
   updateUserEmailByAdmin
 );
-adminRoutes.put("/user/profile/edit/data", validateData, updateUserDataByAdmin);
+adminRoutes.put(
+  "/user/:userId/profile/edit/data",
+  validateUserIdByParams,
+  validateData,
+  updateUserDataByAdmin
+);
 adminRoutes.post(
-  "/user/profile/edit/image",
+  "/user/:userId/profile/edit/image",
+  validateUserIdByParams,
   upload.single("image"),
   uploadUserImageByAdmin
 );

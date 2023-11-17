@@ -1,14 +1,16 @@
 const msgResponse = require("../../constants/message.json");
 const {
   updatePassService,
-  updateEmailService,
-  updateDataService,
+  updateEmailAction,
+  updateDataAction,
+  uploadImageService,
 } = require("../user/user.service");
 const {
   addRoleService,
-  getUsersService,
+  getUsersAction,
   userSoftDeleteService,
-  activeUserService,
+  activeUserAction,
+  getUserDetailAction,
 } = require("./admin.service");
 
 const addRole = async (req, res, next) => {
@@ -33,9 +35,9 @@ const addRole = async (req, res, next) => {
 
 const getUsers = async (req, res, next) => {
   try {
-    let { page, limit, status } = req.query;
-
-    const users = await getUsersService(
+    let { page, limit, status, first_name, last_name } = req.query;
+    const [users, qtyUsers] = await getUsersAction(
+      req.user.id,
       limit ? (!isNaN(parseInt(limit)) ? parseInt(limit) : 10) : 10,
       page ? (!isNaN(parseInt(page)) ? parseInt(page) : 1) : 1,
       status
@@ -44,7 +46,9 @@ const getUsers = async (req, res, next) => {
             ? null
             : parseInt(status)
           : null
-        : null
+        : null,
+      typeof first_name == "string" ? first_name : null,
+      typeof last_name == "string" ? last_name : null
     );
     console.info(
       `Service: getUsers | Method: GET, getUsers: users founded: OK`
@@ -52,11 +56,34 @@ const getUsers = async (req, res, next) => {
     return res.status(200).send({
       ok: true,
       message: msgResponse.users.found,
-      data: { users },
+      data: {
+        users,
+        qtyUsers: qtyUsers,
+        limit: limit ?? 10,
+      },
       error: [],
     });
   } catch (error) {
     console.error(`Service: getUsers | Method: GET, Error: ${error}`);
+    next(error);
+  }
+};
+
+const getUserDetail = async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+    const user = await getUserDetailAction(userId);
+    console.info(
+      `Service: getUserDetail | Method: GET, getUserDetail: user founded: OK`
+    );
+    return res.status(200).send({
+      ok: true,
+      message: msgResponse.user.founded,
+      data: { user },
+      error: [],
+    });
+  } catch (error) {
+    console.error(`Service: getUserDetail | Method: GET, Error: ${error}`);
     next(error);
   }
 };
@@ -83,7 +110,7 @@ const userSoftDelete = async (req, res, next) => {
 const activeUser = async (req, res, next) => {
   try {
     const { userId } = req.params;
-    await activeUserService(userId);
+    await activeUserAction(userId);
     console.info(
       `Service: activeUser | Method: PUT, activeUser: user active: OK`
     );
@@ -125,7 +152,7 @@ const updateUserEmailByAdmin = async (req, res, next) => {
   try {
     const { userId } = req.params;
     const { email } = req.body;
-    await updateEmailService(userId, email);
+    await updateEmailAction(userId, email);
     console.info(
       `Service: updateUserEmailByAdmin | Method: PUT, updateUserEmailByAdmin: OK`
     );
@@ -146,7 +173,7 @@ const updateUserEmailByAdmin = async (req, res, next) => {
 const updateUserDataByAdmin = async (req, res, next) => {
   try {
     const { userId } = req.params;
-    const userUpdated = await updateDataService(userId, req.body);
+    const userUpdated = await updateDataAction(userId, req.body);
     console.info(
       `Service: updateUserDataByAdmin | Method: PUT, updateUserDataByAdmin: OK`
     );
@@ -167,9 +194,10 @@ const updateUserDataByAdmin = async (req, res, next) => {
 const uploadUserImageByAdmin = async (req, res, next) => {
   try {
     const { userId } = req.params;
-    if (!req.file) throw new Error("No se cargo archivo");
+    // if (!req.file) throw new Error("No se cargo archivo");
+    if (!req.body.image) throw new Error("No se cargo archivo");
 
-    const imageUpadted = await uploadImageService(userId, req.file);
+    const imageUpadted = await uploadImageService(userId, req.body.image);
     console.info(
       `Service: uploadUserImageByAdmin | Method: POST, uploadUserImageByAdmin: image uploaded successfully`
     );
