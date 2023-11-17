@@ -9,10 +9,11 @@ const {
   updateEmail,
   updateData,
   uploadUserImage,
+  getUser,
 } = require("./user.controller");
 
 const userRoutes = require("express").Router();
-
+userRoutes.get("/", getUser);
 userRoutes.put("/profile/edit/pass", validateRenewPassword, updatePass);
 userRoutes.put("/profile/edit/email", validateRenewEmail, updateEmail);
 userRoutes.put("/profile/edit/data", validateData, updateData);
