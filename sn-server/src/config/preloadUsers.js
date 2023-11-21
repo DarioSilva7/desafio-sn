@@ -16,10 +16,11 @@ const preloadUsers = async () => {
   );
   if (usersQuantity < 45) {
     for (let i = 0; i < 45; i++) {
-      const dni = Math.random() * (99999999 - 1000000) + 1000000;
+      const dni =
+        Math.floor(Math.random() * (99999999 - 1000000 + 1)) + 1000000;
       const payload = {
         email: faker.internet.email(),
-        first_name: faker.person.first_name(),
+        first_name: faker.person.firstName(),
         last_name: faker.person.lastName(),
         dni,
         image: faker.image.url(),
