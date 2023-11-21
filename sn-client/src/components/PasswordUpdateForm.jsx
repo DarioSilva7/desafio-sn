@@ -9,7 +9,6 @@ import { validateInputsChangePass } from "../utils/validations";
 // eslint-disable-next-line react/prop-types
 export const PasswordUpdateForm = ({ isAdmin, userId }) => {
   const dispatch = useDispatch();
-
   const { password, confirm, formState, errors, onInputChange } = useForm(
     "changePass",
     {}
@@ -41,9 +40,9 @@ export const PasswordUpdateForm = ({ isAdmin, userId }) => {
   return (
     <div className="flex flex-col">
       <label className="mt-4" htmlFor="password">
-        Current password:
+        New password:
       </label>
-      <div className="flex justify-between">
+      <div className="flex justify-start">
         <input
           className="border border-solid border-sky-900"
           type={showPass}
@@ -63,15 +62,14 @@ export const PasswordUpdateForm = ({ isAdmin, userId }) => {
             onClick={() => setShowPass("text")}
           />
         )}
-        <div>
-          {errors.password && <p className={"red"}>{errors.password}</p>}
-        </div>
+      </div>
+      <div>
+        {errors.password && <p className={"text-red-500"}>{errors.password}</p>}
       </div>
       <label className="mt-4" htmlFor="confirm">
         Confirm password:
       </label>
-      <div className="flex justify-between">
-        {" "}
+      <div className="flex justify-start">
         <input
           className="border border-solid border-sky-900"
           type={showConfirmPass}
@@ -91,10 +89,12 @@ export const PasswordUpdateForm = ({ isAdmin, userId }) => {
             onClick={() => setShowConfirmPass("text")}
           />
         )}
-        <div>{errors.confirm && <p className={"red"}>{errors.confirm}</p>}</div>
+      </div>
+      <div>
+        {errors.confirm && <p className={"text-red-500"}>{errors.confirm}</p>}
       </div>
       <button
-        className="w-auto mx-auto mt-2 text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+        className={`w-auto mx-auto mt-2 text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2`}
         onClick={handleUpdatepassword}
       >
         Send

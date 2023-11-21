@@ -1,7 +1,10 @@
-# FROM node:18
-# WORKDIR /myapp
-# COPY package.json .
-# RUN npm install
+FROM node:18
+WORKDIR /myapp
+COPY package.json .
+COPY package-lock.json .
+RUN npm install
 
-# COPY . .
-# CMD npm start
+EXPOSE 3000
+
+COPY . .
+CMD npm start

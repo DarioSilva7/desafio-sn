@@ -1,19 +1,20 @@
 import { loginAction } from "../services/actions";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../redux/userSlice";
 import { useForm } from "../hooks/useForm";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 
 export const LoginScreen = () => {
+  const { user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const initialForm = {
-    email: "darioemmanuelsilva@gmail.com",
-    password: "@4Password",
-  };
-  const { email, password, onInputChange } = useForm(initialForm);
+  const [showPass, setShowPass] = useState("password");
+
+  const { email, password, errors, onInputChange } = useForm("login");
 
   const onclickLogin = async (e) => {
     e.preventDefault();
@@ -22,8 +23,21 @@ export const LoginScreen = () => {
       password: password,
     });
     dispatch(loginUser(response));
+    window.localStorage.setItem("user", JSON.stringify(response));
     navigate("/home");
   };
+
+  useEffect(() => {
+    if (!user) {
+      const storedUser = JSON.parse(window.localStorage.getItem("user"));
+      const storedPage = window.localStorage.getItem("page");
+
+      if (storedUser) {
+        dispatch(loginUser(storedUser));
+        navigate(storedPage);
+      }
+    }
+  }, []);
 
   return (
     <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
@@ -57,8 +71,9 @@ export const LoginScreen = () => {
                 onChange={onInputChange}
                 required
                 className="block w-full rounded-md border-0 py-1.5 px-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              ></input>
+              />
             </div>
+            {errors.email && <p className={"text-red-500"}>{errors.email}</p>}
           </div>
 
           <div>
@@ -69,27 +84,31 @@ export const LoginScreen = () => {
               >
                 Password
               </label>
-              <div className="text-sm">
-                <a
-                  href="#"
-                  className="font-semibold text-indigo-600 hover:text-indigo-500"
-                >
-                  Forgot password?
-                </a>
-              </div>
+
+              {showPass === "text" ? (
+                <EyeSlashIcon
+                  className="w-8 ml-2 cursor-pointer"
+                  onClick={() => setShowPass("password")}
+                />
+              ) : (
+                <EyeIcon
+                  className="w-8 ml-2 cursor-pointer"
+                  onClick={() => setShowPass("text")}
+                />
+              )}
             </div>
             <div className="mt-2">
               <input
                 id="password"
                 name="password"
-                type="password"
+                type={showPass}
                 autoComplete="current-password"
                 value={password}
                 onChange={onInputChange}
                 required
-                placeholder="Ejemplo: @4Password"
+                placeholder="Example: @4Password"
                 className="block w-full rounded-md border-0 py-1.5 px-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              ></input>
+              />
             </div>
           </div>
 
@@ -104,6 +123,11 @@ export const LoginScreen = () => {
               Sign in
             </button>
             {/* )} */}
+          </div>
+          <div>
+            {errors.password && (
+              <p className={"text-red-500"}>{errors.password}</p>
+            )}
           </div>
         </form>
 

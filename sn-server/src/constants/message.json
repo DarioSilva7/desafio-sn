@@ -18,6 +18,7 @@
   "user": {
     "founded":"Usuario encontrado",
     "activated":"Usuario activado",
+    "softDeleted": "Usuario eliminado",
     "update": {
       "email": "Email actualizado, inicie sesion nuevamente",
       "pass": "Contraseña actualizada, inicie sesion nuevamente",
@@ -25,8 +26,6 @@
       "image": "Imagen cargada"
     }
   },
-  "activated": "Usuario activado",
-  "softDeleted": "Usuario eliminado logicamente",
   "getDetail": "Datos de usuario encontrados",
   "editUserDetail": "Datos de usuario editados",
   "admin": {

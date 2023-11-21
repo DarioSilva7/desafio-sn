@@ -4,10 +4,6 @@ import moment from "moment";
 
 // eslint-disable-next-line react/prop-types
 export const ModalUserDetail = ({ user, handleClick }) => {
-  console.log(
-    "🚀 ~ file: ModalUserDetail.jsx:4 ~ ModalUserDetail ~ user:",
-    user
-  );
   return (
     <div
       id="default-modal"

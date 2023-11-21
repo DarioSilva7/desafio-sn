@@ -14,6 +14,7 @@ const initialState = {
   inactiveUsers: null,
   limit: 10,
   qtyUsers: null,
+  errors: null,
 };
 
 export const userSlice = createSlice({
@@ -34,11 +35,10 @@ export const userSlice = createSlice({
     },
     logout: (state, action) => {
       cookies.remove("token");
+      window.localStorage.clear();
       state.user = null;
     },
     changeImage: (state, action) => {
-      console.log("🚀 ~ file: userSlice.js:39 ~ action.payload:", action);
-
       state.profilePicture = action.payload;
     },
     changeImageAsAdmin: (state, action) => {
@@ -48,7 +48,6 @@ export const userSlice = createSlice({
       userFounded.image = action.payload.image;
     },
     changeDataAsAdmin: (state, action) => {
-      console.log("🚀 ~ file: userSlice.js:51 ~ action:", action.payload);
       state.allUsers = state.allUsers.map((u) =>
         u.id == action.payload.id
           ? {
@@ -59,7 +58,6 @@ export const userSlice = createSlice({
       );
     },
     loadUsers: (state, action) => {
-      console.log("🚀 ~ file: userSlice.js:62 ~ action:", action.payload);
       state.allUsers = action.payload.users.filter((u) => u.active == true);
       state.inactiveUsers = action.payload.users.filter(
         (u) => u.active == false
@@ -68,26 +66,30 @@ export const userSlice = createSlice({
       state.limit = action.payload.limit;
     },
     loadUser: (state, action) => {
-      console.log("🚀 ~ file: userSlice.js:71 ~ action:", action.payload);
       state.user = { ...action.payload };
     },
-    filterById: (state, action) => {
-      state.inactiveUsers = [
-        ...state.inactiveUsers,
-        state.allUsers.find((user) => user.id == action.payload),
+    inactivateUser: (state, action) => {
+      const userFounded = state.allUsers.find((u) => u.id == action.payload);
+      userFounded.active = false;
+
+      state.inactiveUsers = [...state.inactiveUsers, userFounded];
+
+      state.allUsers = [
+        ...state.allUsers.filter((u) => u.id !== action.payload),
       ];
-      state.allUsers = state.allUsers.filter(
-        (user) => user.id != action.payload
-      );
     },
     reactivateUser: (state, action) => {
-      state.allUsers = [
-        ...state.allUsers,
-        state.inactiveUsers.find((user) => user.id == action.payload),
-      ];
-      state.inactiveUsers = state.inactiveUsers.filter(
-        (user) => user.id != action.payload
+      const userFounded = state.inactiveUsers.find(
+        (u) => u.id == action.payload
       );
+      userFounded.active = true;
+      state.allUsers = [...state.allUsers, userFounded];
+      state.inactiveUsers = [
+        ...state.inactiveUsers.filter((user) => user.id !== action.payload),
+      ];
+    },
+    setErrors: (state, action) => {
+      state.errors = action.payload;
     },
   },
 });
@@ -100,9 +102,10 @@ export const {
   changeDataAsAdmin,
   loadUsers,
   loadUser,
-  filterById,
+  inactivateUser,
   reactivateUser,
   changeImageAsAdmin,
+  setErrors,
 } = userSlice.actions;
 
 export default userSlice.reducer;

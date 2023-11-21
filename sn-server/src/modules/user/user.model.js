@@ -73,7 +73,10 @@ User.init(
       type: DataTypes.INTEGER,
       allowNull: false,
       validate: {
-        len: { msg: "El dni debe estar compuesto por 8 digitos", args: [8] },
+        is: {
+          args: /^[0-9]{7,}$/, // Asegurar que el DNI tenga al menos 7 dígitos
+          msg: "El DNI debe tener al menos 7 dígitos",
+        },
       },
     },
     email: {
@@ -100,7 +103,7 @@ User.init(
     image: {
       type: DataTypes.STRING(400),
       defaultValue:
-        "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pinterest.co.uk%2Fpin%2Fdefault-avatar-profile-icon-vector-social-media-user-image-stock-vector--953144708607357143%2F&psig=AOvVaw0wki3HtU_XXhH33RrKeFsL&ust=1700253905877000&source=images&cd=vfe&ved=0CBEQjRxqFwoTCOCOwMOxyYIDFQAAAAAdAAAAABAE",
+        "https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png",
       allowNull: true,
     },
     active: {

@@ -9,8 +9,8 @@ const db = {
     config.db.db_user,
     config.db.db_password,
     {
-      port: config.db.db_local_port,
-      host: config.db.db_localhost,
+      // port: config.db.db_local_port,
+      host: config.db.db_dockerhost,
       dialect: "mysql",
       dialectOptions: {
         connectTimeout: 5000,

@@ -13,32 +13,23 @@ export const ModalUserEdit = ({ user, handleClick }) => {
 
   const { last_name, first_name, dni, onInputChange } = useForm({});
   const [birthdate, setBirthdate] = useState();
-  console.log(
-    "🚀 ~ file: ModalUserEdit.jsx:16 ~ ModalUserEdit ~ birthdate:",
-    birthdate
-  );
 
   const isAdmin = roles.includes("admin");
 
   const handleClickData = async () => {
-    try {
-      const objData = {
-        last_name,
-        first_name,
-        dni: dni && parseInt(dni),
-        birthdate,
-      };
-      const { data } = await updateDataAction(isAdmin, user.id, objData);
+    const objData = {
+      last_name,
+      first_name,
+      dni: dni && parseInt(dni),
+      birthdate,
+    };
+    const data = await updateDataAction(isAdmin, user.id, objData);
+    if (data.ok) {
       isAdmin && UserLoggued.id !== user.id
-        ? dispatch(changeDataAsAdmin(data.user))
-        : dispatch(loadUser(data.user));
+        ? dispatch(changeDataAsAdmin(data.data.user))
+        : dispatch(loadUser(data.data.user));
       alert("Usuario actualizado");
       handleClick();
-    } catch (error) {
-      console.log(
-        "🚀 ~ file: ModalUserEdit.jsx:21 ~ handleClickData ~ error:",
-        error
-      );
     }
   };
 

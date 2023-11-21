@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import { ProtectedRoute } from "./components/ProtectedRoute";
-import { Home } from "./components/Home";
-import { Profile } from "./components/Profile";
+import { Home } from "./pages/Home";
+import { Profile } from "./pages/Profile";
 import { Dashboard } from "./pages/Dashboard";
 import { SignUpScreen } from "./pages/SignUpScreen";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,10 +9,11 @@ import { useCallback, useEffect } from "react";
 import { LoginScreen } from "./pages/LoginScreen";
 import { NavBar } from "./components/NavBar";
 import { getUserDetailAction } from "./services/actions";
-import { loadUser } from "./redux/userSlice";
+import { loadUser, setErrors } from "./redux/userSlice";
+import { Dialog } from "./components/Dialog";
 
 export default function App() {
-  const { user, roles } = useSelector((state) => state.user);
+  const { user, roles, errors } = useSelector((state) => state.user);
 
   const dispatch = useDispatch();
 
@@ -22,6 +23,9 @@ export default function App() {
     return data;
   }, [dispatch]);
 
+  const clouseDialog = () => {
+    dispatch(setErrors(null));
+  };
   const userObject = {
     ...user,
     Roles: roles.map((r) => {
@@ -29,16 +33,16 @@ export default function App() {
     }),
   };
   useEffect(() => {
-    refreshUserData();
+    user && refreshUserData();
   }, [refreshUserData]);
 
   return (
     <>
       {user && <NavBar />}
       <Routes>
+        <Route path="/" element={<LoginScreen />} />
         <Route path="/login" element={<LoginScreen />} />
         <Route path="/register" element={<SignUpScreen />} />
-
         <Route
           element={<ProtectedRoute isAllowed={!!user} redirectTo={"/login"} />}
         >
@@ -56,6 +60,7 @@ export default function App() {
           <Route path="/dashboard" element={<Dashboard />} />
         </Route>
       </Routes>
+      {errors && <Dialog errors={errors} clouseDialog={clouseDialog} />}
     </>
   );
 }

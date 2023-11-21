@@ -2,7 +2,7 @@ import { Fragment } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useDispatch, useSelector } from "react-redux";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { logoutAction } from "../services/actions";
 import { logout } from "../redux/userSlice";
 
@@ -12,6 +12,14 @@ function classNames(...classes) {
 
 export const NavBar = () => {
   const { profilePicture, roles } = useSelector((state) => state.user);
+
+  const navigation = [
+    { name: "Dashboard", href: "/dashboard", current: false },
+    { name: "Home", href: "/home", current: false },
+    { name: "Profile", href: "/profile", current: false },
+  ];
+
+  const navigator = useNavigate();
 
   const dispatch = useDispatch();
   const onClickLogout = async () => {
@@ -113,6 +121,25 @@ export const NavBar = () => {
               </div>
             </div>
           </div>
+          <Disclosure.Panel className="sm:hidden">
+            <div className="space-y-1 px-2 pb-3 pt-2">
+              {navigation.map((item) => (
+                <Disclosure.Button
+                  key={item.name}
+                  onClick={() => navigator(item.href)}
+                  className={classNames(
+                    item.current
+                      ? "bg-gray-900 text-white"
+                      : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                    "block rounded-md px-3 py-2 text-base font-medium"
+                  )}
+                  aria-current={item.current ? "page" : undefined}
+                >
+                  {item.name}
+                </Disclosure.Button>
+              ))}
+            </div>
+          </Disclosure.Panel>
         </>
       )}
     </Disclosure>

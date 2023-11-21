@@ -22,12 +22,12 @@ const {
   updateUserDataByAdmin,
   uploadUserImageByAdmin,
 } = require("./admin.controller");
-const { getUserDetailAction } = require("./admin.service");
+const { getUserDetailService } = require("./admin.service");
 
 adminRoutes.get("/", (req, res) => res.send("ADMIN ROUTES"));
 adminRoutes.get("/users", getUsers);
 
-adminRoutes.get("/user/:userId", validateUserIdByParams, getUserDetailAction);
+adminRoutes.get("/user/:userId", validateUserIdByParams, getUserDetailService);
 
 adminRoutes.delete(
   "/user/:userId",

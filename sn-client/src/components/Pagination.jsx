@@ -29,7 +29,7 @@ export const Pagination = ({ pages }) => {
   }, [currentPage]);
 
   return (
-    <div className="flex justify-center mt-10 bg-white rounded-lg font-[Poppins]">
+    <div className="flex justify-around items-center bg-white rounded-lg font-[Poppins]">
       <button
         onClick={back}
         disabled={currentPage == 1}

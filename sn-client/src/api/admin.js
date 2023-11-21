@@ -2,9 +2,7 @@ import axiosInstance from "../config/axios";
 
 export const getUsersAsAdmin = async () => {
   try {
-    console.log("🚀 ~ file: admin.js:7 ~ getUsersAsAdmin ~ try:");
     const { data } = await axiosInstance.get(`/admin/users`);
-    console.log("🚀 ~ file: admin.js:10 ~ getUsersAsAdmin ~ data:", data);
     return data;
   } catch (error) {
     console.log("🚀 ~ file: admin.js:10 ~ getUsers ~ error:", error);

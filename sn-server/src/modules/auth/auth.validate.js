@@ -13,14 +13,14 @@ const options = {
     .max(30)
     .pattern(new RegExp(/^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$/))
     .label(
-      "Nombre es requerido, debe tener un minimo de 3 y un maximo de 30 caracteres, solo caracteres de a-z"
+      "Nombre debe tener un minimo de 3 y un maximo de 30 caracteres, solo caracteres de a-z"
     ),
   last_name: Joi.string()
     .min(3)
     .max(30)
     .pattern(new RegExp(/^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$/))
     .label(
-      "Apellido es requerido, debe tener un minimo de 3 caracteres, solo caracteres de a-z"
+      "Apellido debe tener un minimo de 3 caracteres, solo caracteres de a-z"
     ),
   email: Joi.string()
     .email({
@@ -28,7 +28,7 @@ const options = {
       tlds: { allow: false },
     })
     .label("El correo debe ser valido"),
-  birthdate: Joi.string().allow(""),
+  birthdate: Joi.string().allow(null).optional(),
   dni: Joi.number()
     .integer()
     .min(1000000)
@@ -60,7 +60,7 @@ const blueprintRegister = Joi.object().keys({
   password: options.password.required(),
   confirm: options.confirm.required(),
   dni: options.dni.required(),
-  image: Joi.string(),
+  birthdate: options.birthdate,
 });
 const validateRegister = (req, res, next) => {
   const validationResult = blueprintRegister.validate(req.body, {

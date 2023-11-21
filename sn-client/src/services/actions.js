@@ -3,6 +3,8 @@ import Cookies from "universal-cookie";
 import { ADMIN_PATH, USER_PATH } from "../config";
 import axiosInstance from "../config/axios";
 const cookies = new Cookies();
+import { store } from "../redux/store";
+import { setErrors } from "../redux/userSlice";
 
 export const ACTIONS = {
   LOGIN_USER_SUCCESS: "LOGIN_USER_SUCCESS",
@@ -16,15 +18,11 @@ const loginAction = async (payload) => {
     const { data } = await login(payload);
     if (data.ok) {
       return { token: data.data.token, user: data.data.user };
-    } else {
-      console.log("🚀 ~ file: actions.js:26 ~ loginAction ~ ELSEE");
-      return "NO SE";
     }
   } catch (error) {
-    // alert(error.response.data.error[0].message);
-    console.log("🚀 ~ file: actions.js:14 ~ login ~ error:", error);
-    alert(error.response.data.error.map((e) => e.message));
-    // return "EN EL CATCH";
+    store.dispatch(
+      setErrors([{ error: error.response.data.error[0].message }])
+    ); // alert(error.response.data.error.map((e) => e.message));
   }
 };
 
@@ -36,18 +34,19 @@ const logoutAction = async () => {
       return;
     }
   } catch (error) {
-    alert(error.response.data.error.map((e) => e.error));
+    store.dispatch(setErrors(error.response.data.error));
   }
 };
 
 const registerAction = async (user) => {
   try {
     const { data } = await register(user);
-    if (data.ok) {
-      return data.message;
-    }
+    return data;
   } catch (error) {
-    alert(error.response.data.error.map((e) => e.error));
+    store.dispatch(
+      setErrors([{ error: error.response.data.error[0].message }])
+    );
+    return { data: { ok: false } };
   }
 };
 
@@ -56,13 +55,13 @@ const updateEmailAction = async (isAdmin, userId, email) => {
     const endpoint = isAdmin
       ? `${ADMIN_PATH}/user/${userId}/profile/edit/email`
       : `${USER_PATH}/profile/edit/email`;
-    const rta = await axiosInstance.put(`${endpoint}`, {
+    await axiosInstance.put(`${endpoint}`, {
       email,
     });
-    alert(rta.data.message);
-    return rta;
+    return;
   } catch (error) {
-    throw new Error(`${error.response.data.error[0].message}`);
+    store.dispatch(setErrors(error.response.data.error));
+    return false;
   }
 };
 
@@ -74,21 +73,11 @@ const updatePasswordAction = async (isAdmin, userId, newPass) => {
     const { data } = await axiosInstance.put(`${endpoint}`, newPass);
     return data;
   } catch (error) {
-    console.log(
-      "🚀 ~ file: actions.js:84 ~ updatePasswordAction ~ error:",
-      error
-    );
-    alert(error.response.data.error.map((e) => e.message));
+    store.dispatch(setErrors([{ error: error.response.data.error[0].error }]));
   }
 };
 
 const updateImageAction = async (isAdmin, userId, image) => {
-  console.log(
-    "🚀 ~ file: actions.js:97 ~ updateImageAction ~ isAdmin, userId, image:",
-    isAdmin,
-    userId,
-    image
-  );
   try {
     const endpoint = isAdmin
       ? `${ADMIN_PATH}/user/${userId}/profile/edit/image`
@@ -98,12 +87,11 @@ const updateImageAction = async (isAdmin, userId, image) => {
     });
     return data;
   } catch (error) {
-    alert(error.response.data.error.map((e) => e.error));
+    store.dispatch(setErrors(error.response.data.error));
   }
 };
 
 const updateDataAction = async (isAdmin, userId, payload) => {
-  console.log("🚀 ~ file: actions.js:121 ~ updateDataAction ~ data:", payload);
   try {
     const endpoint = isAdmin
       ? `${ADMIN_PATH}/user/${userId}/profile/edit/data`
@@ -111,43 +99,35 @@ const updateDataAction = async (isAdmin, userId, payload) => {
     const { data } = await axiosInstance.put(`${endpoint}`, payload);
     return data;
   } catch (error) {
-    alert(error.response.data.error.map((e) => e.error));
+    store.dispatch(setErrors(error.response.data.error));
+    return { data: { ok: false } };
   }
 };
 
 const deleteUserAction = async (userId) => {
   try {
-    return axiosInstance.delete(`/admin/user/${userId}`);
+    const { data } = await axiosInstance.delete(`/admin/user/${userId}`);
+    return data;
   } catch (error) {
-    alert(error.response.data.error.map((e) => e.error));
+    store.dispatch(setErrors(error.response.data.error));
   }
 };
 
-// const getUsersAction = async (page, payload) => {
-const getUsersAction = async (page) => {
+// const getUsersAction = async (page) => {
+const getUsersAction = async (page, payload) => {
   try {
-    // if (payload) {
-    //   const { first_name, last_name } = payload;
-    //   let url = `/admin/users?page=${page}`;
-    //   if (first_name) url += `&first_name=${first_name}`;
-    //   if (last_name) url += `&last_name=${last_name}`;
-
-    //   console.log("🚀 ~ file: actions.js:135 ~ getUsersAction ~ url:", url);
-    //   const { data } = await axiosInstance.get(
-    //     url
-    //     // `/admin/users?page=${page}&first_name=${first_name}&last_name=${last_name}`
-    //   );
-    //   return data.data.users;
-    // }
-    const { data } = await axiosInstance.get(`/admin/users?page=${page}`);
-    console.log(
-      "🚀 ~ file: actions.js:144 ~ getUsersAction ~ data:",
-      data.data
-    );
-    return data.data;
+    if (payload) {
+      const { first_name } = payload;
+      let url = `/admin/users?page=${page}&first_name=${first_name}`;
+      const { data } = await axiosInstance.get(url);
+      return data.data;
+    } else {
+      const { data } = await axiosInstance.get(`/admin/users?page=${page}`);
+      return data.data;
+    }
   } catch (error) {
     console.log("🚀 ~ file: actions.js:129 ~ getUsersAction ~ error:", error);
-    alert(error.response.data.error.map((e) => e.error));
+    store.dispatch(setErrors(error.response.data.error));
   }
 };
 
@@ -156,7 +136,7 @@ const getUserDetailAction = async () => {
     const { data } = await axiosInstance.get(`/user`);
     return data;
   } catch (error) {
-    alert(error.response.data.error.map((e) => e.error));
+    store.dispatch(setErrors(error.response.data.error));
   }
 };
 
@@ -166,7 +146,7 @@ const activeUserAction = async (userId) => {
     return data;
   } catch (error) {
     console.log("🚀 ~ file: actions.js:149 ~ activeUserAction ~ error:", error);
-    alert(error.response.data.error.map((e) => e.error));
+    store.dispatch(setErrors(error.response.data.error));
   }
 };
 

@@ -10,7 +10,7 @@ const {
   getUsersAction,
   userSoftDeleteService,
   activeUserAction,
-  getUserDetailAction,
+  getUserDetailService,
 } = require("./admin.service");
 
 const addRole = async (req, res, next) => {
@@ -35,7 +35,7 @@ const addRole = async (req, res, next) => {
 
 const getUsers = async (req, res, next) => {
   try {
-    let { page, limit, status, first_name, last_name } = req.query;
+    let { page, limit, status, first_name } = req.query;
     const [users, qtyUsers] = await getUsersAction(
       req.user.id,
       limit ? (!isNaN(parseInt(limit)) ? parseInt(limit) : 10) : 10,
@@ -47,8 +47,7 @@ const getUsers = async (req, res, next) => {
             : parseInt(status)
           : null
         : null,
-      typeof first_name == "string" ? first_name : null,
-      typeof last_name == "string" ? last_name : null
+      typeof first_name == "string" ? first_name : null
     );
     console.info(
       `Service: getUsers | Method: GET, getUsers: users founded: OK`
@@ -72,7 +71,7 @@ const getUsers = async (req, res, next) => {
 const getUserDetail = async (req, res, next) => {
   try {
     const { userId } = req.params;
-    const user = await getUserDetailAction(userId);
+    const user = await getUserDetailService(userId);
     console.info(
       `Service: getUserDetail | Method: GET, getUserDetail: user founded: OK`
     );

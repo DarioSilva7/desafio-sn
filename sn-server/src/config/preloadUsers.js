@@ -3,8 +3,11 @@ const User = require("../modules/user/user.model");
 
 const password = "@4Password";
 const personsArray = [];
-const teest = faker.date.birthdate({ min: 18, max: 65, mode: "age" });
-console.log("🚀 ~ file: preloadUsers.js:7 ~ teest:", teest);
+
+/**
+ * This function is responsible for preloading the database with some random users.
+ * @returns Boolean
+ */
 const preloadUsers = async () => {
   const usersQuantity = await User.count();
   console.log(

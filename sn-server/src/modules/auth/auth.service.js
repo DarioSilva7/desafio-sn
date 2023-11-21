@@ -5,17 +5,38 @@ const User = require("../user/user.model");
 const UserToken = require("../userToken/userToken.model");
 const Role = require("../role/role.model");
 const msgErrors = require("../../constants/errorMessage.json");
+const { sendRegistrationNotification } = require("../../utils/nodemailer");
 // const { createVerificationCode } = require("../../utils/verificationCode");
 
-const registerAction = async (user) => {
+/**
+ * This function is responssible for create a user
+ * @param { string} email
+ * @param { string} first_name
+ * @param { string} last_name
+ * @param { string} dni
+ * @param { string} password
+ * @returns id of the user created
+ */
+const registerService = async (user) => {
   // user.verificationCode= createVerificationCode();
 
-  const userFounded = await User.create(user);
+  const userCreated = await User.create(user);
   // await sendVerificationCode(email, verificationCode);
-  return userFounded.id;
+  await sendRegistrationNotification(
+    userCreated.email,
+    userCreated.first_name,
+    userCreated.last_name
+  );
+  return userCreated.id;
 };
 
-const loginAction = async ({ email, password }) => {
+/**
+ * This function is responsible for hash the password and create the user token
+ * @param {string} email
+ * @param {string} password
+ * @returns user token & user data
+ */
+const loginService = async ({ email, password }) => {
   const user = await User.findOne({
     where: { email: email },
     attributes: {
@@ -33,7 +54,7 @@ const loginAction = async ({ email, password }) => {
   if (!(await bcrypt.compare(password, user.password))) {
     throw boom.unauthorized(msgErrors.auth.invalidCredentials);
   }
-  console.log("🚀 ~ file: auth.service.js:32 ~ loginAction ~ user:", user);
+  console.log("🚀 ~ file: auth.service.js:32 ~ loginService ~ user:", user);
 
   const payload = {
     id: user.id,
@@ -58,24 +79,29 @@ const loginAction = async ({ email, password }) => {
   return [token, userObject];
 };
 
-const logoutAction = async (userLogged) => {
+/**
+ * This function is responsible for delete the user token
+ * @param {User} userLogged
+ * @returns
+ */
+const logoutService = async (userLogged) => {
   return UserToken.destroy({ where: { userId: userLogged.id } });
 };
 
-const renewPasswordService = async (id, password) => {
-  const user = await User.findByPk(id);
-  if (!user) {
-    throw boom.notFound("Credenciales invalidas");
-  } else {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    user.password = hashedPassword;
-    return await user.save();
-  }
-};
+// const renewPasswordService = async (id, password) => {
+//   const user = await User.findByPk(id);
+//   if (!user) {
+//     throw boom.notFound("Credenciales invalidas");
+//   } else {
+//     const hashedPassword = await bcrypt.hash(password, 10);
+//     user.password = hashedPassword;
+//     return await user.save();
+//   }
+// };
 
 module.exports = {
-  registerAction,
-  loginAction,
-  logoutAction,
-  renewPasswordService,
+  registerService,
+  loginService,
+  logoutService,
+  // renewPasswordService,
 };

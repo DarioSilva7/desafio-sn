@@ -12,11 +12,9 @@ export const EmailUpdateForm = ({ isAdmin, userId, user }) => {
   const { email, onInputChange } = useForm(initialForm);
 
   const handleUpdateEmail = async () => {
-    try {
-      await updateEmailAction(isAdmin, userId, email);
+    const ok = await updateEmailAction(isAdmin, userId, email);
+    if (ok) {
       !isAdmin && dispatch(logout());
-    } catch (error) {
-      alert(error);
     }
   };
 

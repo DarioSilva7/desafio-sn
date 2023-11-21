@@ -1,3 +1,9 @@
+/**
+ * This function is used to generate a validation error JSON response (status 422 Unprocessable Entity) in the data validation context
+ * @param {*} res
+ * @param {*} errors
+ * @returns
+ */
 function validationErrorResponse(res, errors) {
   return res.status(422).json({
     ok: false,

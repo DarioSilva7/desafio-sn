@@ -29,11 +29,21 @@ const upload = multer({
   },
 });
 
+/**
+ * This function validates whether the MIME type of a file is in a predefined whitelist.
+ * @param {string} mimetype type file
+ * @returns
+ */
 const validFileType = (mimetype) => {
   console.log("🚀 ~ file: multer.js:54 ~ validFileType ~ mimetype:", mimetype);
   return mimetypesWhitelist.includes(mimetype);
 };
 
+/**
+ * This function validates whether a file extension is in a predefined whitelist.
+ * @param {string} fileName
+ * @returns
+ */
 const validFileExtension = (fileName) => {
   return fileExtensionsWhiteList.includes(extname(fileName).slice(1));
 };

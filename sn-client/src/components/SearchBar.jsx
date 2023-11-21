@@ -1,36 +1,27 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "../hooks/useForm";
-import { loadUsers } from "../redux/userSlice";
+import { loadUsers, setErrors } from "../redux/userSlice";
 import { getUsersAction } from "../services/actions";
-// import { useEffect } from "react";
 
 export const SearchBar = () => {
   const dispatch = useDispatch();
 
-  const { first_name, last_name, onInputChange } = useForm({});
+  let { first_name, onInputChange } = useForm({});
 
   const handleSearchClick = async () => {
-    try {
-      const users = await getUsersAction(1, { first_name, last_name });
-      console.log(
-        "🚀 ~ file: SearchBar.jsx:15 ~ handleSearchClick ~ users:",
-        users
-      );
-
-      dispatch(loadUsers(users));
-    } catch (error) {
-      console.log(
-        "🚀 ~ file: SearchBar.jsx:18 ~ handleSearchClick ~ error:",
-        error
-      );
-    }
+    const users = await getUsersAction(1, { first_name });
+    dispatch(setErrors([{ error: `${users.qtyUsers} usuarios encontrados` }]));
+    dispatch(loadUsers(users));
   };
-  //   useEffect(() => {
-  //     console.log("🚀 ~ file: Dashboard.jsx:29 ~ useEffect ");
-  //   }, [dispatch]);
+
+  const handleAllUsersClick = async () => {
+    const users = await getUsersAction(1);
+    dispatch(setErrors([{ error: `${users.qtyUsers} usuarios encontrados` }]));
+    dispatch(loadUsers(users));
+  };
 
   return (
-    <div data-headlessui-state="open">
+    <div className="flex flex-col px-6 py-4" data-headlessui-state="open">
       <label
         className="lu awa awe awp axv"
         id="headlessui-combobox-label-1"
@@ -54,26 +45,17 @@ export const SearchBar = () => {
           aria-controls="headlessui-combobox-options-56"
           onChange={onInputChange}
         />
-        <input
-          className="tn adu afa alo arq atm atw axv bbn bbt bbx bcf bne bnf bnr cid cif"
-          name="last_name"
-          id="headlessui-combobox-input-2"
-          role="combobox"
-          type="text"
-          aria-expanded="true"
-          aria-autocomplete="list"
-          data-headlessui-state="open"
-          value={last_name}
-          placeholder="lastname"
-          aria-labelledby="headlessui-combobox-label-1"
-          aria-controls="headlessui-combobox-options-56"
-          onChange={onInputChange}
-        />
         <button
           onClick={handleSearchClick}
           className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
         >
           Search
+        </button>
+        <button
+          onClick={handleAllUsersClick}
+          className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+        >
+          All users
         </button>
       </div>
     </div>

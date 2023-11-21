@@ -1,14 +1,16 @@
 import { PencilIcon } from "@heroicons/react/24/outline";
-import { EmailUpdateForm } from "./EmailUpdateForm";
+import { EmailUpdateForm } from "../components/EmailUpdateForm";
 import { useEffect, useState } from "react";
-import { ImageUpdateForm } from "./ImageUpdateForm";
+import { ImageUpdateForm } from "../components/ImageUpdateForm";
 import { useSelector } from "react-redux";
-import { PasswordUpdateForm } from "./PasswordUpdateForm";
-import { ModalUserEdit } from "./ModalUserEdit";
+import { PasswordUpdateForm } from "../components/PasswordUpdateForm";
+import { ModalUserEdit } from "../components/ModalUserEdit";
 import moment from "moment";
 
 /* eslint-disable react/prop-types */
 export const Profile = ({ user }) => {
+  window.localStorage.setItem("page", "/profile");
+
   const { roles, profilePicture } = useSelector((state) => state.user);
   const [openModalEdit, setOpenModalEdit] = useState(false);
   const [userSelected, setUserSelected] = useState({});
@@ -123,7 +125,11 @@ export const Profile = ({ user }) => {
                 className="flex mx-2 cursor-pointer"
                 onClick={() => showUserEdit(user)}
               >
-                <PencilIcon className="block h-8 w-8" aria-hidden="true" />
+                <PencilIcon
+                  title="Edit"
+                  className="block h-8 w-8"
+                  aria-hidden="true"
+                />
               </button>
             </div>
           </div>
