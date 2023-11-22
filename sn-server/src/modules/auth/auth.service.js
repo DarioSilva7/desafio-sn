@@ -1,11 +1,14 @@
 const bcrypt = require("bcrypt");
 const boom = require("@hapi/boom");
-const { generateToken } = require("../../jwt/jwt");
+const { generateToken, generateTemporalToken } = require("../../jwt/jwt");
 const User = require("../user/user.model");
 const UserToken = require("../userToken/userToken.model");
 const Role = require("../role/role.model");
 const msgErrors = require("../../constants/errorMessage.json");
-const { sendRegistrationNotification } = require("../../utils/nodemailer");
+const {
+  sendRegistrationNotification,
+  sendTokenToRenewPassword,
+} = require("../../utils/nodemailer");
 // const { createVerificationCode } = require("../../utils/verificationCode");
 
 /**
@@ -88,20 +91,41 @@ const logoutService = async (userLogged) => {
   return UserToken.destroy({ where: { userId: userLogged.id } });
 };
 
-// const renewPasswordService = async (id, password) => {
-//   const user = await User.findByPk(id);
-//   if (!user) {
-//     throw boom.notFound("Credenciales invalidas");
-//   } else {
-//     const hashedPassword = await bcrypt.hash(password, 10);
-//     user.password = hashedPassword;
-//     return await user.save();
-//   }
-// };
+const forgotPasswordService = async (email) => {
+  const userExists = await User.findOne({
+    where: { email },
+  });
+  const payload = {
+    id: userExists.id,
+    email: userExists.email,
+  };
+  const token = generateTemporalToken(payload);
+  try {
+    await sendTokenToRenewPassword(email, token);
+    await userExists.addUserToken(token, userExists.id);
+    return;
+  } catch (e) {
+    throw new Error(e);
+  }
+};
+
+const resetPasswordService = async (id, password) => {
+  const user = await User.findByPk(id);
+  if (!user) {
+    throw boom.notFound("Credenciales invalidas");
+  } else {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    user.password = hashedPassword;
+    await user.save();
+    await logoutService(user);
+    return;
+  }
+};
 
 module.exports = {
   registerService,
   loginService,
   logoutService,
-  // renewPasswordService,
+  forgotPasswordService,
+  resetPasswordService,
 };

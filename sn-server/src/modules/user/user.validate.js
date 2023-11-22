@@ -36,8 +36,20 @@ const validateUserAlreadyActive = async (req, res, next) => {
   next();
 };
 
+const validateUserByEmail = async (req, res, next) => {
+  const { email } = req.body;
+  const userExists = await User.findOne({
+    where: { email },
+  });
+  if (!userExists) {
+    next(boom.notFound("No se encuentra usuario con el correo provisto"));
+  }
+  next();
+};
+
 module.exports = {
   validateUserIdByParams,
   validateUserDeleted,
   validateUserAlreadyActive,
+  validateUserByEmail,
 };

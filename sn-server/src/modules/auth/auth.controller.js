@@ -3,6 +3,8 @@ const {
   loginService,
   registerService,
   logoutService,
+  forgotPasswordService,
+  resetPasswordService,
 } = require("./auth.service");
 
 const register = async (req, res, next) => {
@@ -71,27 +73,45 @@ const logout = async (req, res, next) => {
   }
 };
 
-// const renewPassword = async (req, res, next) => {
-//   try {
-//     const { password } = req.body;
-//     const { id } = req.user;
-//     await renewPasswordService(id, password);
-//     console.info(`Service: renewPassword | Method: POST, Renew password: ok`);
-//     res.status(200).json({
-//       ok: true,
-//       message: msgResponse.auth.password.renew,
-//       data: {},
-//       error: [],
-//     });
-//   } catch (err) {
-//     console.error(`Service: renewPassword | Method: POST, Error: ${err}`);
-//     next(err);
-//   }
-// };
+const forgotPassword = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    await forgotPasswordService(email);
+    console.info(`Service: forgotPassword | Method: POST, Renew password: ok`);
+    res.status(200).json({
+      ok: true,
+      message: msgResponse.auth.mail.sent,
+      data: {},
+      error: [],
+    });
+  } catch (err) {
+    console.error(`Service: forgotPassword | Method: POST, Error: ${err}`);
+    next(err);
+  }
+};
+
+const resetPassword = async (req, res, next) => {
+  try {
+    const { password } = req.body;
+    const { id } = req.user;
+    await resetPasswordService(id, password);
+    console.info(`Service: resetPassword | Method: POST, Renew password: ok`);
+    res.status(200).json({
+      ok: true,
+      message: msgResponse.auth.password.renew,
+      data: {},
+      error: [],
+    });
+  } catch (err) {
+    console.error(`Service: resetPassword | Method: POST, Error: ${err}`);
+    next(err);
+  }
+};
 
 module.exports = {
   login,
   register,
   logout,
-  // renewPassword,
+  forgotPassword,
+  resetPassword,
 };

@@ -7,6 +7,7 @@ if (error) {
 }
 
 const config = {
+  base_url: envVars.BASE_URL,
   jwtKey: envVars.JWT_SECRET,
   db: {
     db_user: envVars.MYSQLDB_USER,

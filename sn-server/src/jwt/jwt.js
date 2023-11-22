@@ -24,7 +24,15 @@ const verifyToken = (token) => {
   });
 };
 
+const generateTemporalToken = (payload) => {
+  console.log("🚀 ~ file: jwt.js:7 ~ generateToken ~ payload:", payload);
+  return jwt.sign(payload, config.jwtKey, {
+    expiresIn: "6h",
+  });
+};
+
 module.exports = {
   generateToken,
   verifyToken,
+  generateTemporalToken,
 };

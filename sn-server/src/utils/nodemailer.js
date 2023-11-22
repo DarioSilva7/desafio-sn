@@ -52,6 +52,31 @@ const sendRegistrationNotification = async (email, first_name, last_name) => {
   }
 };
 
+const sendTokenToRenewPassword = async (email, token) => {
+  try {
+    const source = fs.readFileSync("./src/views/forgot-password.html", "utf-8");
+    const hbsTemplate = Handlebars.compile(source);
+    const url = "reset-password";
+    const data = {
+      url: `${config.base_url}${url}?token=${token}`,
+    };
+    const HTML = hbsTemplate(data);
+    const mailOptions = {
+      from: config.mail.user,
+      to: email,
+      subject: "Restablecimiento de contraseña",
+      html: HTML,
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    return info;
+  } catch (error) {
+    console.rror(`Service: sendTokenToRenewPassword | Error: ${error}`);
+    throw new Error("Ocurrio un error al enviar el correo");
+  }
+};
+
 module.exports = {
   sendRegistrationNotification,
+  sendTokenToRenewPassword,
 };

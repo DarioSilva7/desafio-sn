@@ -125,6 +125,17 @@ const validateRenewPassword = async (req, res, next) => {
   next();
 };
 
+const validateResetPassword = async (req, res, next) => {
+  const validationResult = blueprintRenewPass.validate(req.body, {
+    abortEarly: false,
+    convert: false,
+  });
+  if (validationResult.error) {
+    return validationErrorResponse(res, validationResult.error);
+  }
+  next();
+};
+
 const blueprintRenewEmail = Joi.object().keys({
   email: options.email.required(),
 });
@@ -169,4 +180,5 @@ module.exports = {
   validateRenewPassword,
   validateRenewEmail,
   validateData,
+  validateResetPassword,
 };

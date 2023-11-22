@@ -6,7 +6,7 @@
     "verify": "Verificacion exitosa",
     "refresh": "El nuevo codigo fue enviado con exito",
     "mail": {
-      "sent": "El envio del correo fue exitoso "
+      "sent": "Se envio un correo para restablecer la contraseña"
     },
     "password": {
       "renew": "Contraseña actualizada"

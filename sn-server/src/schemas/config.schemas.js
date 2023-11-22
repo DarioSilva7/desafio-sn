@@ -17,6 +17,7 @@ const configSchema = joi
     CORS_ORIGIN: joi.string().required(),
     EMAIL_USER_GMAIL: joi.string().required(),
     EMAIL_PASS_GMAIL: joi.string().required(),
+    BASE_URL: joi.string().required(),
   })
   .unknown()
   .required();
