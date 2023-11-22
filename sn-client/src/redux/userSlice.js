@@ -15,6 +15,7 @@ const initialState = {
   limit: 10,
   qtyUsers: null,
   errors: null,
+  messages: null,
 };
 
 export const userSlice = createSlice({
@@ -91,6 +92,9 @@ export const userSlice = createSlice({
     setErrors: (state, action) => {
       state.errors = action.payload;
     },
+    setMessages: (state, action) => {
+      state.messages = action.payload;
+    },
   },
 });
 
@@ -106,6 +110,7 @@ export const {
   reactivateUser,
   changeImageAsAdmin,
   setErrors,
+  setMessages,
 } = userSlice.actions;
 
 export default userSlice.reducer;

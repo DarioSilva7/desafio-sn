@@ -1,6 +1,6 @@
 import { useForm } from "../hooks/useForm";
 import { useDispatch } from "react-redux";
-import { logout } from "../redux/userSlice";
+import { logout, setErrors, setMessages } from "../redux/userSlice";
 import { updatePasswordAction } from "../services/actions";
 import { useState } from "react";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
@@ -23,14 +23,18 @@ export const PasswordUpdateForm = ({ isAdmin, userId }) => {
       return !!error;
     });
     if (hasErrors) {
-      alert("Please complete both fields to update your password");
+      dispatch(
+        setErrors([
+          { error: "Please complete both fields to update your password" },
+        ])
+      );
     } else {
       try {
         const data = await updatePasswordAction(isAdmin, userId, {
           password,
           confirm,
         });
-        alert(data.message);
+        dispatch(setMessages([{ msg: data.message }]));
         dispatch(logout());
       } catch (error) {
         console.error("Error al actualizar el correo electrónico:", error);

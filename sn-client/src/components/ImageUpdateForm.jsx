@@ -2,7 +2,12 @@ import { useDispatch } from "react-redux";
 import { updateImageAction } from "../services/actions";
 import { useState } from "react";
 import { upLoadFile } from "../firebase/uploadFile";
-import { changeImage, changeImageAsAdmin } from "../redux/userSlice";
+import {
+  changeImage,
+  changeImageAsAdmin,
+  setErrors,
+  setMessages,
+} from "../redux/userSlice";
 
 // eslint-disable-next-line react/prop-types
 export const ImageUpdateForm = ({ isAdmin, userId, img, className }) => {
@@ -17,9 +22,9 @@ export const ImageUpdateForm = ({ isAdmin, userId, img, className }) => {
       isAdmin
         ? dispatch(changeImageAsAdmin({ image: data.data.image, userId }))
         : dispatch(changeImage(data.data.image));
-      alert(data.message);
+      dispatch(setMessages([{ msg: data.message }]));
     } catch (error) {
-      alert(error.message);
+      dispatch(setErrors([{ error: error.message }]));
     }
   };
   return (

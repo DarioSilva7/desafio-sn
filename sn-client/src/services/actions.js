@@ -1,6 +1,7 @@
-import { login, logout, register } from "../api/auth";
 import Cookies from "universal-cookie";
-import { ADMIN_PATH, USER_PATH } from "../config";
+import axios from "axios";
+import { login, logout, register } from "../api/auth";
+import { ADMIN_PATH, AUTH_PATH, USER_PATH } from "../config";
 import axiosInstance from "../config/axios";
 const cookies = new Cookies();
 import { store } from "../redux/store";
@@ -22,7 +23,7 @@ const loginAction = async (payload) => {
   } catch (error) {
     store.dispatch(
       setErrors([{ error: error.response.data.error[0].message }])
-    ); // alert(error.response.data.error.map((e) => e.message));
+    );
   }
 };
 
@@ -150,6 +151,39 @@ const activeUserAction = async (userId) => {
   }
 };
 
+const postForgotPassword = async (email) => {
+  try {
+    const { data } = await axios.post(`${AUTH_PATH}/forgot-password`, {
+      email,
+    });
+    return data.message;
+  } catch (error) {
+    console.log(
+      "🚀 ~ file: actions.js:162 ~ postForgotPassword ~ error:",
+      error
+    );
+    store.dispatch(setErrors(error.response.data.error));
+  }
+};
+
+const putResetPasswordAction = async (values, tokenResetPassword) => {
+  try {
+    const { data } = await axiosInstance.put("/auth/reset-password", values, {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: "Bearer " + tokenResetPassword,
+      },
+    });
+    return data;
+  } catch (error) {
+    console.log(
+      "🚀 ~ file: actions.js:149 ~ putResetPasswordAction ~ error:",
+      error
+    );
+    store.dispatch(setErrors(error.response.data.error));
+  }
+};
+
 export {
   loginAction,
   logoutAction,
@@ -162,4 +196,6 @@ export {
   getUsersAction,
   getUserDetailAction,
   activeUserAction,
+  postForgotPassword,
+  putResetPasswordAction,
 };

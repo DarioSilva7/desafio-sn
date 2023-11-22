@@ -1,6 +1,6 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useForm } from "../hooks/useForm";
-import { loadUsers, setErrors } from "../redux/userSlice";
+import { loadUsers, setMessages } from "../redux/userSlice";
 import { getUsersAction } from "../services/actions";
 
 export const SearchBar = () => {
@@ -10,13 +10,13 @@ export const SearchBar = () => {
 
   const handleSearchClick = async () => {
     const users = await getUsersAction(1, { first_name });
-    dispatch(setErrors([{ error: `${users.qtyUsers} usuarios encontrados` }]));
+    dispatch(setMessages([{ msg: `${users.qtyUsers} usuarios encontrados` }]));
     dispatch(loadUsers(users));
   };
 
   const handleAllUsersClick = async () => {
     const users = await getUsersAction(1);
-    dispatch(setErrors([{ error: `${users.qtyUsers} usuarios encontrados` }]));
+    dispatch(setMessages([{ msg: `${users.qtyUsers} usuarios encontrados` }]));
     dispatch(loadUsers(users));
   };
 

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import {
   validateChangePass,
+  validateEmailForgotPassword,
   validateLogin,
   validateRegister,
 } from "../utils/validations";
@@ -28,7 +29,9 @@ export const useForm = (typeForm, initialForm = {}) => {
       case "register":
         setErrors(validateRegister(formState));
         break;
-
+      case "forgot":
+        setErrors(validateEmailForgotPassword(formState));
+        break;
       default:
         break;
     }

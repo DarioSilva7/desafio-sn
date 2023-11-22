@@ -10,7 +10,12 @@ import {
   deleteUserAction,
   getUsersAction,
 } from "../services/actions";
-import { inactivateUser, loadUsers, reactivateUser } from "../redux/userSlice";
+import {
+  inactivateUser,
+  loadUsers,
+  reactivateUser,
+  setMessages,
+} from "../redux/userSlice";
 import { useEffect, useState } from "react";
 import { ModalUserDetail } from "../components/ModalUserDetail";
 import { ImageUpdateForm } from "../components/ImageUpdateForm";
@@ -32,7 +37,7 @@ export const Dashboard = () => {
 
   const deleteUser = async (userId) => {
     const { message } = await deleteUserAction(userId);
-    alert(message);
+    dispatch(setMessages([{ msg: message }]));
     dispatch(inactivateUser(userId));
   };
 
@@ -51,7 +56,7 @@ export const Dashboard = () => {
 
   const handleClickActivateUser = async (userId) => {
     const { message } = await activeUserAction(userId);
-    alert(message);
+    dispatch(setMessages([{ msg: message }]));
     dispatch(reactivateUser(userId));
   };
 

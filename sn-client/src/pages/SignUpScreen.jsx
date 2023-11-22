@@ -5,12 +5,14 @@ import { registerAction } from "../services/actions";
 import { Link, useNavigate } from "react-router-dom";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import { validateInputsRegister } from "../utils/validations";
+import { useDispatch } from "react-redux";
+import { setErrors, setMessages } from "../redux/userSlice";
 
 export const SignUpScreen = () => {
   const [showPass, setShowPass] = useState("password");
   const [showConfirmPass, setShowConfirmPass] = useState("register");
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
   const {
     errors,
     first_name,
@@ -32,7 +34,11 @@ export const SignUpScreen = () => {
       return !!error;
     });
     if (hasErrors) {
-      alert("Please complete all fields to submit your registration");
+      dispatch(
+        setErrors([
+          { error: "Please complete both fields to reset your password" },
+        ])
+      );
     } else {
       const data = await registerAction({
         first_name,
@@ -44,7 +50,7 @@ export const SignUpScreen = () => {
         birthdate,
       });
       if (data.ok) {
-        alert(data.message);
+        dispatch(setMessages([{ msg: data.message }]));
         navigate("/login", { replace: true });
       }
     }
@@ -56,7 +62,7 @@ export const SignUpScreen = () => {
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img
             className="mx-auto h-10 w-auto"
-            src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
+            src="https://github.com/org-sistemas-sn/desafio-tecnico/blob/advancedPlus/assets/sn-sintesis.png?raw=true"
             alt="Your Company"
           />
           <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">

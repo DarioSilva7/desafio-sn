@@ -9,11 +9,13 @@ import { useCallback, useEffect } from "react";
 import { LoginScreen } from "./pages/LoginScreen";
 import { NavBar } from "./components/NavBar";
 import { getUserDetailAction } from "./services/actions";
-import { loadUser, setErrors } from "./redux/userSlice";
+import { loadUser, setErrors, setMessages } from "./redux/userSlice";
 import { Dialog } from "./components/Dialog";
+import { ResetPassword } from "./pages/ResetPassword";
+import { ForgotPassword } from "./pages/ForgotPassword";
 
 export default function App() {
-  const { user, roles, errors } = useSelector((state) => state.user);
+  const { user, roles, errors, messages } = useSelector((state) => state.user);
 
   const dispatch = useDispatch();
 
@@ -23,8 +25,11 @@ export default function App() {
     return data;
   }, [dispatch]);
 
-  const clouseDialog = () => {
+  const clouseErrorDialog = () => {
     dispatch(setErrors(null));
+  };
+  const clouseMessageDialog = () => {
+    dispatch(setMessages(null));
   };
   const userObject = {
     ...user,
@@ -41,6 +46,8 @@ export default function App() {
       {user && <NavBar />}
       <Routes>
         <Route path="/" element={<LoginScreen />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/login" element={<LoginScreen />} />
         <Route path="/register" element={<SignUpScreen />} />
         <Route
@@ -60,7 +67,10 @@ export default function App() {
           <Route path="/dashboard" element={<Dashboard />} />
         </Route>
       </Routes>
-      {errors && <Dialog errors={errors} clouseDialog={clouseDialog} />}
+      {errors && <Dialog errors={errors} clouseDialog={clouseErrorDialog} />}
+      {messages && (
+        <Dialog messages={messages} clouseDialog={clouseMessageDialog} />
+      )}
     </>
   );
 }

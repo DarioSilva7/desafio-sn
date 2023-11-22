@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "../hooks/useForm";
 import { updateDataAction } from "../services/actions";
 import { Calendar } from "./Calendar";
-import { changeDataAsAdmin, loadUser } from "../redux/userSlice";
+import { changeDataAsAdmin, loadUser, setMessages } from "../redux/userSlice";
 import { useState } from "react";
 
 // eslint-disable-next-line react/prop-types
@@ -28,7 +28,7 @@ export const ModalUserEdit = ({ user, handleClick }) => {
       isAdmin && UserLoggued.id !== user.id
         ? dispatch(changeDataAsAdmin(data.data.user))
         : dispatch(loadUser(data.data.user));
-      alert("Usuario actualizado");
+      dispatch(setMessages([{ msg: data.message }]));
       handleClick();
     }
   };

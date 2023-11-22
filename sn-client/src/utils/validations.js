@@ -95,3 +95,16 @@ export const validateInputsRegister = (formState) => {
   }
   return errors;
 };
+
+export const validateEmailForgotPassword = (formState) => {
+  let errors = {};
+  if (!formState.email) {
+    errors.email = "Email is required";
+  }
+  if (
+    !/^[a-zA-Z0-9._+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(formState.email)
+  ) {
+    errors.email = "Invalid email";
+  }
+  return errors;
+};

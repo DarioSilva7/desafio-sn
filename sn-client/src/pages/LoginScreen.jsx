@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
+import { ResetPassword } from "./ResetPassword";
 
 export const LoginScreen = () => {
   const { user } = useSelector((state) => state.user);
@@ -111,7 +112,14 @@ export const LoginScreen = () => {
               />
             </div>
           </div>
-
+          <span className="text-center text-sm text-gray-500 m-2">
+            <Link
+              to={"/forgot-password"}
+              className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
+            >
+              Forgot password
+            </Link>
+          </span>
           <div>
             {/* {isLoading ? (
               "loading"
@@ -130,7 +138,6 @@ export const LoginScreen = () => {
             )}
           </div>
         </form>
-
         <p className="mt-10 text-center text-sm text-gray-500">
           Not a member?
           <Link
